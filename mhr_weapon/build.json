@@ -18,8 +18,7 @@
   "proxy": {
     "/api": {
       "enable": true,
-      //"target": "http://localhost:8080"
-      "target": "http://116.62.220.225:8080/"
+      "target": "http://116.62.220.225:8080/",
     }
   }
 }
