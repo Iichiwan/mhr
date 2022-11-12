@@ -7,6 +7,71 @@ import { FormBinderWrapper, FormBinder, FormError } from '@icedesign/form-binder
 
 const { Row, Col } = Grid;
 
+const actionDataSourceStart = [
+  {
+    value: 'eatApple',
+    label: '吃苹果',
+  },
+  {
+    value: 'choose',
+    label: '随便选一个助战',
+  },
+  {
+    value: 'friend',
+    label: '选择指定助战',
+  }
+];
+
+const classList = [
+  {
+    value: 1,
+    label: '全',
+  },
+  {
+    value: 2,
+    label: '剑',
+  },
+  {
+    value: 3,
+    label: '弓',
+  },
+  {
+    value: 4,
+    label: '枪',
+  },
+  {
+    value: 5,
+    label: '骑',
+  },
+  {
+    value: 6,
+    label: '术',
+  },
+  {
+    value: 7,
+    label: '杀',
+  },
+  {
+    value: 8,
+    label: '狂',
+  },
+  {
+    value: 9,
+    label: 'extra',
+  },
+  {
+    value: 10,
+    label: 'mix',
+  },
+];
+
+const friendList = [
+  {
+    value: '杀狐',
+    label: '杀狐',
+  }
+];
+
 const actionDataSource = [
   {
     value: 'skill',
@@ -93,6 +158,9 @@ class AjaxTest1 extends React.Component {
       fgoAutoList: '',
       selectId: '0',
       selectFA: '',
+      valueS: {
+        items: [],
+      },
       value1: {
         items: [],
       },
@@ -169,6 +237,7 @@ class AjaxTest1 extends React.Component {
     const axios = require('axios');
 
     var script = this.state.selectFA ? this.state.selectFA : {};
+    script.start = this.state.valueS.items;
     script.turn1 = this.state.value1.items;
     script.turn2 = this.state.value2.items;
     script.turn3 = this.state.value3.items;
@@ -221,6 +290,23 @@ class AjaxTest1 extends React.Component {
         select
       </Button>
     );
+  };
+
+  //start
+  addItemS = () => {
+    this.state.valueS.items.push({});
+    this.setState({ valueS: this.state.valueS });
+  };
+
+  formChangeS = (valueS) => {
+    this.setState({ valueS });
+  };
+
+  removeItemS = (index) => {
+    this.state.valueS.items.splice(index, 1);
+    this.setState({
+      valueS: this.state.valueS,
+    });
   };
 
   //turn1
@@ -309,6 +395,7 @@ class AjaxTest1 extends React.Component {
   };
 
   renderEdit = () => {
+    this.state.valueS.items = this.state.selectFA.start ? this.state.selectFA.start : [];
     this.state.value1.items = this.state.selectFA.turn1 ? this.state.selectFA.turn1 : [];
     this.state.value2.items = this.state.selectFA.turn2 ? this.state.selectFA.turn2 : [];
     this.state.value3.items = this.state.selectFA.turn3 ? this.state.selectFA.turn3 : [];
@@ -316,7 +403,18 @@ class AjaxTest1 extends React.Component {
     return (
       <div>
         <Tab>
-          <Tab.Item title="turn 1" key="1">
+        <Tab.Item title="start" key="1">
+            <FormBinderWrapper value={this.state.valueS} onChange={this.formChangeS} ref="form">
+              <ArticleList items={this.state.valueS.items} addItem={this.addItemS} removeItem={this.removeItemS} isStart={true}/>
+            </FormBinderWrapper>
+            {false ? (
+              <div>
+                <strong>当前表单数据：</strong>
+                <pre>{JSON.stringify(this.state.valueS, null, 2)}</pre>
+              </div>
+            ) : null}
+          </Tab.Item>
+          <Tab.Item title="turn 1" key="2">
             <FormBinderWrapper value={this.state.value1} onChange={this.formChange1} ref="form">
               <ArticleList items={this.state.value1.items} addItem={this.addItem1} removeItem={this.removeItem1} />
             </FormBinderWrapper>
@@ -328,7 +426,7 @@ class AjaxTest1 extends React.Component {
             ) : null}
           </Tab.Item>
 
-          <Tab.Item title="turn 2" key="2">
+          <Tab.Item title="turn 2" key="3">
             <FormBinderWrapper value={this.state.value2} onChange={this.formChange2} ref="form">
               <ArticleList items={this.state.value2.items} addItem={this.addItem2} removeItem={this.removeItem2} />
             </FormBinderWrapper>
@@ -339,7 +437,7 @@ class AjaxTest1 extends React.Component {
               </div>
             ) : null}
           </Tab.Item>
-          <Tab.Item title="turn 3" key="3">
+          <Tab.Item title="turn 3" key="4">
             <FormBinderWrapper value={this.state.value3} onChange={this.formChange3} ref="form">
               <ArticleList items={this.state.value3.items} addItem={this.addItem3} removeItem={this.removeItem3} />
             </FormBinderWrapper>
@@ -400,7 +498,7 @@ class ArticleList extends React.Component {
               <Col>
                 <span>action：</span>
                 <FormBinder required message="action必填" name={`items[${index}].action`}>
-                  <Select dataSource={actionDataSource} style={{ width: 300, marginRight: 8 }} />
+                  <Select dataSource={this.props.isStart?actionDataSourceStart:actionDataSource} style={{ width: 300, marginRight: 8 }} />
                 </FormBinder>
                 <FormError name={`items[${index}].action`} style={rowStyles.formError} />
               </Col>
@@ -416,6 +514,22 @@ class ArticleList extends React.Component {
                     <span>技能目标(自身为0)：</span>
                     <FormBinder name={`items[${index}].aim`}>
                       <Input defaultValue={0} />
+                    </FormBinder>
+                  </Col>
+                </div>
+              ) : null}
+              {item.action == 'friend'? (
+                <div>
+                  <Col>
+                    <span>助战职介：</span>
+                    <FormBinder name={`items[${index}].serClass`}>
+                      <Select dataSource={classList} style={{ width: 300, marginRight: 8 }} />
+                    </FormBinder>
+                  </Col>
+                  <Col>
+                    <span>助战：</span>
+                    <FormBinder name={`items[${index}].serName`}>
+                      <Select dataSource={friendList} style={{ width: 300, marginRight: 8 }} />
                     </FormBinder>
                   </Col>
                 </div>
