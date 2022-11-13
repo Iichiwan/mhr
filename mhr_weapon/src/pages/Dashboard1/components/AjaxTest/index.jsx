@@ -69,7 +69,15 @@ const friendList = [
   {
     value: '杀狐',
     label: '杀狐',
-  }
+  },
+  {
+    value: '奥宝',
+    label: '奥宝',
+  },
+  {
+    value: '5宝奥宝',
+    label: '5宝奥宝',
+  },
 ];
 
 const actionDataSource = [
@@ -93,6 +101,10 @@ const actionDataSource = [
     value: 'card',
     label: '指令卡(最后一回合)',
   },
+  {
+    value: 'cardV2',
+    label: '指令卡V2',
+  }
 ];
 
 const cardDataSource = [
@@ -130,6 +142,17 @@ const cardDataSource = [
   },
 ];
 
+const yesOrNo = [
+  {
+    value: '0',
+    label: '否',
+  },
+  {
+    value: '1',
+    label: '是',
+  }
+];
+
 const rowStyles = {
   row: {
     marginBottom: '20px',
@@ -148,6 +171,7 @@ const rowStyles = {
     padding: 10,
   },
 };
+
 
 class AjaxTest1 extends React.Component {
   constructor(props) {
@@ -339,7 +363,7 @@ class AjaxTest1 extends React.Component {
   removeItem2 = (index) => {
     this.state.value2.items.splice(index, 1);
     this.setState({
-      value1: this.state.value2,
+      value2: this.state.value2,
     });
   };
 
@@ -356,7 +380,7 @@ class AjaxTest1 extends React.Component {
   removeItem3 = (index) => {
     this.state.value3.items.splice(index, 1);
     this.setState({
-      value1: this.state.value3,
+      value3: this.state.value3,
     });
   };
 
@@ -596,6 +620,40 @@ class ArticleList extends React.Component {
                     <span>等待时间：</span>
                     <FormBinder name={`items[${index}].wait`}>
                       <Input defaultValue={10} />
+                    </FormBinder>
+                  </Col>
+                </div>
+              ) : null}
+              {item.action == 'cardV2' ? (
+                <div>
+                  <Col>
+                    <span>指令卡1：</span>
+                    <FormBinder name={`items[${index}].one`}>
+                      <Select dataSource={cardDataSource} style={{ width: 200, marginRight: 8 }} />
+                    </FormBinder>
+                  </Col>
+                  <Col>
+                    <span>指令卡2：</span>
+                    <FormBinder name={`items[${index}].two`}>
+                      <Select dataSource={cardDataSource} style={{ width: 200, marginRight: 8 }} />
+                    </FormBinder>
+                  </Col>
+                  <Col>
+                    <span>指令卡3：</span>
+                    <FormBinder name={`items[${index}].three`}>
+                      <Select dataSource={cardDataSource} style={{ width: 200, marginRight: 8 }} />
+                    </FormBinder>
+                  </Col>
+                  <Col>
+                    <span>是否为最后一回合：</span>
+                    <FormBinder name={`items[${index}].lastTurn`}>
+                      <Select dataSource={yesOrNo} style={{ width: 200, marginRight: 8 }} />
+                    </FormBinder>
+                  </Col>
+                  <Col>
+                    <span>目标：</span>
+                    <FormBinder name={`items[${index}].aim`}>
+                      <Input defaultValue={"0"} />
                     </FormBinder>
                   </Col>
                 </div>
